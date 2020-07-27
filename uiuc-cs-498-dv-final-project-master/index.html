@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>CS 498 DV Final Project by Kevin Mackie</title>
+
+    <!-- The following two libraries are imported only for compatibility with Internet Explorer, due to a bug
+    that caused incompatibility with features of d3. See -->
+    <script src="https://cdn.jsdelivr.net/bluebird/3.5.0/bluebird.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.js"></script>
+
+    <!-- Bootstrap, jquery, and d3 are the only external libraries used -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v5.js"></script>
+
+    <!-- Internal project inclusions -->
+    <link rel="stylesheet" type="text/css" href="chart.css"/>
+    <script type="text/javascript" src="globals.js"></script>
+    <script type="text/javascript" src="annotations.js"></script>
+    <script type="text/javascript" src="animations.js"></script>
+    <script type="text/javascript" src="statemachine.js"></script>
+    <script type="text/javascript" src="loaddata.js"></script>
+</head>
+
+<body onload="initializeVisualization()">
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-6" align="left">
+            <h3>Research on SCADA Cybersecurity</h3>
+            CS 498 Data Visualization 2020 - Final Project by Rujitha Vennugopal
+        </div>
+        <div class="col-xs-4" align="right"><p></p><p><a type="button" class="btn btn-default" href="about.html" role="button" target="_blank">About the Visualization</a></p>
+        </div>
+        <div class="col-xs-2">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-3">
+            <p></p>
+            <button type="button" class="btn btn-default disabled toggle-enabled-1" onclick="frameBack()">
+                <span class="glyphicon glyphicon-chevron-left"></span>
+            </button>
+            <button type="button" class="btn btn-default active toggle-active-1" onclick="jumpToFrame(0)">0</button>
+            <button type="button" class="btn btn-default toggle-active-1 toggle-active-2" onclick="jumpToFrame(1)">1</button>
+            <button type="button" class="btn btn-default toggle-active-2 toggle-active-3" onclick="jumpToFrame(2)">2</button>
+            <button type="button" class="btn btn-default toggle-active-3 toggle-active-4" onclick="jumpToFrame(3)">3</button>
+            <button type="button" class="btn btn-default toggle-active-4" onclick="jumpToFrame(4)">4</button>
+            <button type="button" class="btn btn-default toggle-active-4 toggle-enabled-4" onclick="frameForward()">
+                <span class="glyphicon glyphicon-chevron-right"></span>
+            </button>
+        </div>
+        <div class="col-xs-7">
+            <div class="toggle-visibility-1"><h1 align="center">Introduction</h1></div>
+            <div class="invisible toggle-visibility-1 toggle-visibility-2"><h1 align="center">A Modest Amount of Literature: Pre-2002</h1></div>
+            <div class="invisible toggle-visibility-2 toggle-visibility-3" align="center"><h1>The Post 9-11 Increase: 2002 to Today</h1></div>
+            <div class="invisible toggle-visibility-3 toggle-visibility-4" align="center"><h1>The Pace of Citations</h1></div>
+            <div class="invisible toggle-visibility-4" align="center"><h1>Explore For Yourself</h1></div>
+        </div>
+        <div class="col-xs-2">
+        </div>
+
+    </div>
+    <div class="row narrative">
+        <div class="col-xs-3">
+            <div id="n-00" class="visible toggle-visibility-1">
+                <h4>When You're Ready ...</h4>
+                Click the above right arrow button to navigate to the next scene in our story.
+            </div>
+            <div id="n-01" class="invisible toggle-visibility-1 toggle-visibility-2">
+                <h3>Early Research Landscape</h3>
+                <p>The graph on the right shows statistics of SCADA cybersecurity research published prior to 2002.
+                </p>
+                <p>The amount of research is relatively small with a trend of slight growth over time.</p>
+                <p>See the next slide for research trends after 2001.</p>
+            </div>
+            <div id="n-02" class="invisible toggle-visibility-2 toggle-visibility-3">
+                <h3>Post 9-11 Increase in Research</h3>
+                <p>The trend shows an abrupt increase in SCADA cybersecurity reserach following the attacks of
+                    9-11. Correlation does not imply causation, and more detailed research would be needed to
+                    determine possible causes of this increase in research activity.
+                </p>
+            </div>
+            <div id="n-03" class="invisible toggle-visibility-3 toggle-visibility-4">
+                <h3>Research Citations</h3>
+                <p>We see here the total citations to date for papers published in each year.</p>
+                <p>The general ratio is approximately 10-20 citations per paper.<p>
+                <p>The drop-off in citations after 2013 suggests that it takes more than 5 years for the full
+                    effect of research to be reached.</p>
+                <p>There is an interesting jump in research citations in 2010-2011.</p>
+                <p>We now proceed to the interactive portion of the narrative, where you will be able
+                    to explore further into the SCADA cybersecurity research literature.</p>
+            </div>
+            <div id="n-04" class="invisible toggle-visibility-4 toggle-visibility-5">
+                <h4>Here's what you can do:</h4>
+                <ul>
+                    <li>Select papers by clicking and dragging on the chart. <b>The papers will be listed in the table below</b></li>
+                    <li>Hover over publication types on the legend to highlight papers of that type on the chart</li>
+                    <li>Filter by type by clicking the checkboxes in the legend</li>
+                    <li>Click titles in the table to open a link (separate webpage) to the paper itself</li>
+                </ul>
+                <div>
+                    <table class="filter-category invisible toggle-visibility-4" align="right">
+                        <thead>
+                        <tr>
+                            <td colspan="3" align="center">Type Legend</td>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-7">
+            <div id="loading-message">
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <h4 align="center">Loading visualization data. Please wait ...</h4>
+            </div>
+            <div id="chart-div" class="invisible" style="position: relative; width: 900px; height: 500px;">
+                <svg id="chart-id" class="chart" style="position: absolute; z-index: 1; top: 0; left: 0; opacity: 0">
+                </svg>
+            </div>
+        </div>
+        <div class="col-xs-2"></div>
+    </div>
+    <div class="row">
+        <hr class="visible toggle-visibility-4">
+        <div class="row invisible toggle-visibility-4">
+            <div class="col-xs-1">
+            </div>
+            <div class="col-xs-10" align="left">
+                <table class="table table-condensed table-striped publications">
+                    <thead>
+                    <tr>
+                        <th>Year</th>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>Author</th>
+                        <th>Citations</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-xs-1">
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,162 @@
+/*.annotation {*/
+    /*position: absolute;*/
+    /*text-align: center;*/
+    /*width: 100px;*/
+    /*height: 50px;*/
+    /*padding: 2px;*/
+    /*border: black;*/
+    /*font: 12px sans-serif;*/
+    /*background: lightgray;*/
+    /*border: 2px;*/
+    /*border-radius: 8px;*/
+    /*pointer-events: none;*/
+/*}*/
+
+li {
+    font-size: 12px;
+}
+#annotation-text text {
+    fill: black;
+}
+.outside-brush {
+    opacity: 0.05;
+}
+
+
+th, td {
+    //border: 1px solid black;
+    padding: 0px;
+    font-size: 11px;
+}
+table {
+    border-spacing: 5px;
+    border-collapse: separate;
+}
+
+tspan {
+    fill: black;
+}
+div {
+    display: block;
+}
+
+div .invisible{
+    display: none;
+}
+
+h1 {
+    color: lightsteelblue;
+}
+
+.bar-papers-rect {
+    fill: orange;
+}
+
+.y-axis-papers line {
+    stroke: orange;
+}
+
+.y-axis-papers path {
+    stroke: orange;
+}
+
+.y-axis-papers text {
+    fill: orange;
+}
+
+#yAxisPapersLabel {
+    fill: orange;
+}
+
+.y-axis-citations line {
+    stroke: steelblue;
+}
+
+.y-axis-citations path {
+    stroke: steelblue;
+}
+
+.y-axis-citations text {
+    fill: steelblue
+}
+.bar-papers-rect:hover {
+    fill: darkorange;
+}
+
+#yAxisCitationsLabel {
+    fill: steelblue;
+}
+
+.bar-citations-rect {
+    fill: lightsteelblue;
+}
+
+.bar-citations-rect:hover {
+    fill: cornflowerblue;
+}
+
+.chart text {
+    font: 11px sans-serif;
+    text-anchor: end;
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 100px;
+    height: 50px;
+    padding: 2px;
+    font: 12px sans-serif;
+    background: white;
+    border: 0px;
+    border-radius: 8px;
+    pointer-events: none;
+}
+.attack {
+    style: "color:red"
+}
+
+.type-category-color-article {
+    stroke: red;
+}
+
+.type-category-color-abstract-report {
+    stroke: lime;
+}
+
+.type-category-color-article-in-press {
+    stroke: navy;
+}
+
+.type-category-color-book {
+    stroke: orange;
+}
+
+.type-category-color-business-article {
+    stroke: yellow;
+}
+
+.type-category-color-conference-paper {
+    stroke: blue;
+}
+.type-category-color-conference-review {
+    stroke: magenta;
+}
+.type-category-color-editorial {
+    stroke: purple;
+}
+.type-category-color-note {
+    stroke: teal;
+}
+.type-category-color-open-access {
+    stroke: coral;
+}
+.type-category-color-review {
+    stroke: lavender;
+}
+.type-category-color-short-survey {
+    stroke: beige;
+}
+.type-category-color-unknown {
+    stroke: olive;
+}
