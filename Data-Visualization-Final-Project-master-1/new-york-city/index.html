@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Lato:400,700,900' rel='stylesheet' type='text/css'>
+    <title>Inside Airbnb: New York City. Adding Data to the Debate.</title>
+    <meta name="description" content="Inside Airbnb is an independent, non-commercial set of tools and data that allows you to explore how Airbnb is REALLY being used in cities around the world." />
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=0.75, maximum-scale=0.75, user-scalable=no">
+    <meta property="og:title" content="Inside Airbnb: New York City. Adding data to the debate." /> 
+    <meta property="og:site_name" content="Inside Airbnb" />
+    <meta property="fb:app_id" content="788070507939603" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://insideairbnb.com" /> 
+    <meta property="og:image" content="https://insideairbnb.com/images/insideairbnb_graphic_fb_1200x630.png" /> 
+    <meta property="og:description" content="Inside Airbnb is a set of independent tools and open data that allows you to explore how Airbnb is REALLY being used in cities around the world." /> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.11.2/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://d3js.org/d3.v3.min.js" type="text/javascript"></script>
+    <script src="../js/tooltip.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.7/crossfilter.js' type='text/javascript'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/dc/1.7.1/dc.js' type='text/javascript'></script>
+    <link href='https://cdnjs.cloudflare.com/ajax/libs/dc/1.7.1/dc.css' rel='stylesheet' type='text/css'>
+        
+    <link rel="stylesheet" href="leaflet.css" />
+    <script src="leaflet.js"></script>
+    
+    <link rel="stylesheet" href="../js/select2.css">
+    <script src="../js/select2.js"></script>
+    <script src="../js/uri.js"></script>
+    <link rel="stylesheet" href="../js/jquery.fancybox.css" type="text/css" media="screen" />
+    <script type="text/javascript" src="../js/jquery.fancybox.pack.js"></script>
+    <link href='../css/insideairbnb.css' rel='stylesheet' type='text/css'>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body class="multiCity includeAboutCity">
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-7626447-6', 'auto');
+  ga('send', 'pageview');
+
+</script>
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '788070507939603',
+      xfbml      : true,
+      version    : 'v2.2'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+</script>
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="../index.html">Inside Airbnb<small>Adding data to the debate</small></a>
+    </div>
+    <div class="collapse navbar-collapse">
+<!--
+        <ul class="nav navbar-nav mainLinks">
+            <li><a href="../about.html">About</a></li>
+            <li><a href="../behind.html">Behind</a></li>
+            <li><a href="../get-the-data.html">Get the Data</a></li>
+        </ul>
+-->
+        <ul class="nav navbar-nav navbar-right">
+            <li>
+                <iframe src="//www.facebook.com/plugins/like.php?href=http%3A%2F%2Finsideairbnb.com&amp;width=140&amp;layout=button_count&amp;action=like&amp;show_faces=false&amp;share=true&amp;height=21&amp;appId=788070507939603" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:140px; height:21px;" allowTransparency="true"></iframe>
+            </li>
+            <li>                        
+                <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://insideairbnb.com/new-york-city" data-via="insideairbnb" data-counturl="http://insideairbnb.com" data-text="Adding #opendata to the #sharingeconomy debate in #NYC">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+            </li>
+        </ul>
+    </div><!--/.nav-collapse -->
+</div><!--/.navbar -->   
+<div id="map"></div>  
+    <div class="narrativePanelHeader">
+        <div id="filterAndCountContainer">
+            <p class="city">New York City</p>
+            <div id="geoFilterContainer">
+                <span class="filterLabel">Filter by:</span>
+                <select id="geoFilters" class="js-states" style="width: 100%;">
+                </select>        
+            </div>
+            <div id="summaryCountContainer" class="summaryCountContainer">
+                <div id="summaryCount">##,###</div>
+                <div id="summaryListingLabel">out of <b><span id="geoTotalListings">##,###</span></b> listings (<span id="summaryCountPercentage">##.#</span><span class="percentageSign">%</span>)</div>
+            </div>
+        </div>
+    </div>
+    <div id="narrativeContentAboutContainer">
+        <div class="narrativeContentAbout">
+            <h2>Airbnb in New York City</h2>
+              <p>New York City is a city of renters, vacancy rates are at crisis levels, and rents continue to rise. </p>
+              <p>Income levels for the average New Yorker haven't kept pace, and affordability is at record lows. Housing is scarce; homelessness levels are increasing; food insecurity is growing; and economic and racial inequality rates in New York City are near the highest in the United States.</p>
+              <p>It's at this time that short term rental platforms, dominated by <a href="http://www.airbnb.com" target="_blank">Airbnb</a>, have entered the market, and grown to have listings of tens of thousands of rooms and entire apartments. </p>
+              <p>Airbnb addresses the demand for tourist accommodation and creates an income stream for &quot;hosts,&quot; and ignores both the need for and loss of housing. </p>
+              <p>Behind buzzwords like &quot;the sharing economy&quot; and &quot;disruptive,&quot; Airbnb as a platform simply allows many of their hosts to operate unlicensed, unregulated and untaxed hotels in residential neighborhoods. </p>
+              <p>The taxes that Airbnb refuses to collect for the city are being used as leverage in Airbnb's corporate lobbying and marketing campaigns to force the city and state to legitimize their business model and legalize Airbnb hosts' activities.</p><p>This "bribe" hides the fact that Airbnb is enabling a massive abuse of housing in New York City, and in particular, in rapidly changing and gentrifying neighborhoods. </p>
+            <h2>Take Action!</h2>
+              <p>If you feel strongly about the impact of Airbnb and want to strengthen enforcement, or the relevant laws, licensing, zoning or taxation that cover short term rentals in New York City, participate in the following ways:</p>
+              <ul>
+                <li>talk to your neighbors, coop, building, block, tenants or merchants association about your feelings and explore how you can act together</li>
+                <li>contact your city or state elected officials</li>
+                <li>join or support  the <a href="http://www.sharebetter.org" target="_blank">Share Better</a> coalition which advocates for a responsible &quot;sharing economy&quot;</li>
+                <li>contact a local community-based organization in your neighborhood working on housing issues</li>
+                <li>spread the word so others can learn how Airbnb is being used <div class="fb-like" data-href="http://insideairbnb.com" data-layout="button_count" data-action="like" data-show-faces="true" data-share="true"></div> <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://insideairbnb.com" data-text="#insideairbnb: #NYC. Adding data to the debate">Tweet</a> <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script></li>
+                  <ul><li>use the hashtags <a href="https://twitter.com/hashtag/insideairbnb" target="_blank">#insideairbnb</a>, <a href="https://twitter.com/hashtag/affordablehousing" target="_blank">#affordablehousing</a>, <a href="https://twitter.com/hashtag/illegalhotels" target="_blank">#illegalhotels</a> and the handle <a href="https://twitter.com/Airbnb" target="_blank">@Airbnb</a> (to let them know what you think)</li>
+                  <li>consider creative uses of the Airbnb created hashtag <a href="https://twitter.com/hashtag/onelessstranger" target="_blank">#OneLessStranger</a>, for e.g. "Rent to a New Yorker not a Tourist to create #OneLessStranger, #insideairbnb"</li>
+                  </ul>
+                  <li>even if you are an Airbnb host, but support a well informed conversation about how Airbnb is affecting New York City and could be used responsibly, share this site or advocate for more data and a richer dialog</li>
+              </ul>
+            <p>If you are a journalist, consider writing about what you learnt from the site about the impact of Airbnb on the city or your community. </p>
+              <p>If you are a statistician or civic hacker, <a href="../get-the-data.html">get the data</a>, analyze and publish your results. If you would like your visualizations hosted, or linked to from this site, please contact <a href="mailto:murray@murraycox.com">murray@murraycox.com</a>.</p>
+            <h2>Supporters of Airbnb</h2>
+            <p>Airbnb maintains an extensive marketing and lobbying site that talks about <a href="https://www.airbnbnyc.com" target="_blank">Airbnb  in New York City</a>, including <a href="https://www.airbnbnyc.com/stories" target="_blank">Host Stories</a>, and how to <a href="https://www.airbnbnyc.com/take-action" target="_blank">Take Action</a> in support of Airbnb. </p>
+            <p>They provide &quot;facts&quot; on  <a href="https://www.airbnbnyc.com/economic-impact" target="_blank">Economic Impact</a>, <a href="https://www.airbnbnyc.com/trust-and-safety" target="_blank">Trust and Safety</a> and <a href="https://www.airbnbnyc.com/sandy-impact" target="_blank">Sandy Impact</a>.</p>
+            <p>There is a  blog about <a href="http://publicpolicy.airbnb.com" target="_blank">Airbnb Public Policy</a> news from around the world, and a very nice, but not very informative visualization at <a href="https://www.airbnb.com/map" target="_blank">A World of Belonging on Airbnb</a>.</p>
+            <h2>Airbnb Opponents</h2>
+              <p>The New York State Attorney General, Eric T. Schneiderman, has been actively pursuing issues with Airbnb, including the breaking of regulations and  laws. In October 2014, his office <a href="http://www.ag.ny.gov/press-release/ag-schneiderman-releases-report-documenting-widespread-illegality-across-airbnbs-nyc" target="_blank">released a report</a> titled &quot;<a href="http://www.ag.ny.gov/pdfs/AIRBNB%20REPORT.pdf" target="_blank">Airbnb In The City</a>&quot; based on  data provided by Airbnb in an out of court settlement after a subpoenia was issued.</p>
+              <p><a href="http://www.sharebetter.org" target="_blank">Share Better</a> is a coalition of friends, neighbors, community activists and elected officials. Their site has stories about experiences with Airbnb and information about Airbnb and the &quot;sharing economy,&quot; and ways to get involved.</p>
+              <p><a href="http://www.nysenate.gov/report/answers-new-yorkers-concerned-or-confused-about-illegal-hotel-law" target="_blank">Liz Krueger</a> is a New York State senator who represents the Upper East Side and is a determined Airbnb foe. </p>
+              <p>Recently, the New York City Public Advocate Letitia James has been <a href="http://www.nydailynews.com/blogs/dailypolitics/james-calls-airbnb-self-police-blog-entry-1.2043073 " target="_blank">vocal about the impact Airbnb is having on the housing market</a>.</p>
+
+              <h2>Data about Airbnb</h2>
+              <h3>Inside Airbnb</h3>
+              <p>Inside Airbnb provides data compiled from the Airbnb web-site for listings available for New York City.</p>
+              <p>A conservative occupancy model has been built in order to estimate <b>Occupancy Rates</b>, <b>Income per Month</b> and <b>Nights per Year</b>. More information on the methodolgy of the occupancy model can be found in the <a href="../about.html#disclaimers">disclaimers</a>.</p>
+              <p><b>Inside Airbnb: New York City</b> uses the following parameters:</p>
+              <ul>
+                  <li>A <b>high availability</b> metric and filter of <b>60 days per year</b></li>
+                  <li>A <b>frequently rented</b> filter of <b>60 days per year</b></li>
+                  <li>A <b>review rate</b> of <b>50%</b> for the number of guests making a booking who leave a review</li>
+                  <li>An average booking of <b>6.4 nights</b> unless a higher minimum nights is configured for a listing. <a href="http://blog.airbnb.com/airbnbs-economic-impact-nyc-community/" target="_blank">Airbnb reported 6.4 nights</a> as the average length of stay for guests using Airbnb in New York</li>
+                  <li>A maximum <b>occupancy rate</b> of <b>70%</b> to ensure the occupancy model does not produce artifically high results based on the available data</li>
+              </ul>
+              <p>If you are a statistician or civic hacker, <a href="../get-the-data.html">get the data</a>, analyze and publish your results.</p>
+              <p>If you would like your visualizations hosted, or linked to from this site, please contact <a href="mailto:murray@murraycox.com">murray@murraycox.com</a>.</p>
+              <h3>Airbnb</h3>
+              <p>Airbnb provides <b>NO PUBLIC DATA</b> to help understand the use of their platform and the impact on cities around the world.</p>
+              <p>Airbnb also provide <b>NO DATA</b> to cities or states to assist them in ensuring that Airbnb hosts and Airbnb are following the local laws.</p>
+              <h3>Other data</h3>
+              <p>Until now, the main source of data on Airbnb has been the NYS Attorney General's Report, &quot;<a href="http://www.ag.ny.gov/pdfs/AIRBNB%20REPORT.pdf" target="_blank">Airbnb In The City</a>&quot; released in October 2014. The often quoted statistic from that report is that &quot;75% of Airbnb's NYC rentals are illegal.&quot;</p>
+              <p>In February 2014, an article published by Jason Clampet in Skift,<a href="http://skift.com/2014/02/13/airbnb-in-nyc-the-real-numbers-behind-the-sharing-story/" target="_blank"> Airbnb in NYC: The Real Numbers Behind the Sharing Story</a>, contained some detailed statistics obtained from the New York City listings on the Airbnb site. </p>
+              <p>A similar analysis was undertaken by  Carolyn Said from the San Francisco Chronicle in <a href="http://www.sfchronicle.com/business/item/airbnb-san-francisco-30110.php " target="_blank">Window into Airbnb’s hidden impact on S.F.</a>.</p>
+              <p>Tom Slee regularly <a href="https://github.com/tomslee/airbnb" target="_blank">scrapes</a> the Airbnb site to produce <a href="http://tomslee.net/airbnb-data" target="_blank">maps of Airbnb</a> use around the world.</p>
+            <h2 id="the-law">The Law </h2>
+              <p>There is a <a href="http://open.nysenate.gov/legislation/bill/S6873B-2009" target="_blank">2010 New York State Law</a> that makes it illegal to rent out a <a href="http://tenant.net/Other_Laws/MDL/mdl01.html" target="_blank">Class A Multi-Dwelling building</a> for less than 30 days without the owner/resident present.</p>
+              <p><a href="http://www.nyc.gov/html/dob/downloads/pdf/ll45of2012.pdf" target="_blank">Local Law No. 45 of 2012</a> of New York City which covers the illegal conversion of a dwelling from permanent residences to other uses, notably short-stay hotel rooms. The law adds definitions of the type of conversions that are illegal, and increases fines for violations. The Legislative Findings include a &quot;declaration of emergency&quot; due to the lack of available apartments and cites a city-wide vacancy rate of only 3.12% in 2011.</p>
+              <p>There are other laws that might apply to an Airbnb host including taxes, rent regulation, zoning codes, business licensing and contracts including leases. Airbnb was forced in an out of court settlement to <a href="https://www.airbnb.com/help/article/650" target="_blank">provide this information</a> to their hosts.  </p>
+              <h2>Housing in New York City</h2>
+              <p>The <a href="http://www.nycrgb.org/html/about/about.html" target="_blank">Rent Guidelines Board</a> provides <a href="http://www.nycrgb.org/html/research/cresearch.html" target="_blank">extensive reports</a> on housing in New York City, covering topics such as their <a href="http://www.nycrgb.org/downloads/research/pdf_reports/14HSR.pdf" target="_blank">Housing Supply Report</a>; and <a href="http://www.nycrgb.org/downloads/research/pdf_reports/ia14.pdf" target="_blank">Income and Afforability Study</a>.</p>
+              <p><a href="http://furmancenter.org" target="_blank">NYU Furman Center</a> provides research on Housing in New York City. Here's a great infographic which talks about the <a href="http://furmancenter.org/NYCRentalLandscape" target="_blank">NYC Rental Landscape</a>.</p>
+                <p>&nbsp;</p>
+        </div> <!--/.narrativeContentAbout -->
+        <a href="#" id="aboutCityClose">Close</a>
+        <a href="#" id="aboutCityOpen">About Airbnb in New York City</a>
+    </div>
+    <div class="narrativePanelContent">
+        <div class="narrativeContentStats">
+            <div class="alert alert-warning alert-dismissible" role="alert" id="alertMissingOut">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <p><strong>You're missing out!</strong></p>
+                <p>Because you're on a mobie device, or your browser is too small, we've limited the features you can use. Switch to a desktop or laptop browser, or resize your browser for the full experience.</p>
+            </div>
+            <div class="leadIn">
+                <p>Airbnb affects the city's housing supply and affordability. Explore the key variables of Airbnb use and how it impacts your neighborhood.</p>
+            </div>
+            <div class="dimensionContainer clearfix">
+                <label><input type="checkbox" name="filterEntireHomes" id="filterEntireHomes"> Only entire homes/apartments</label>
+                <h2>Room Type</h2>
+                <div class="dimensionMetricsContainer">
+                    <div class="dimensionMetricsHeadline">
+                        <span id="summaryEntireHomePercentage">##.#</span><span class="percentageSign">%</span>
+                    </div>
+                    <div class="dimensionMetricsHeadlineLabel">
+                        entire homes/apartments
+                    </div>  
+                    <div class="dimensionMetricsSecondary">
+                        <span class="dollarSign">$</span><span id="summaryPrice">###</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        price/night
+                    </div> 
+                    <div class="dimensionMetricsSecondary">
+                        <span id="summaryEntireHomeMetricsNumber">##,###</span> <span class="parentheses">(</span><span id="summaryEntireHomeMetricsPercentage">##.#</span><span class="percentageSign">%</span><span class="parentheses">)</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        entire home/apartments
+                    </div>
+                    <div class="dimensionMetricsSecondary">
+                        <span id="summaryPrivateRoomMetricsNumber" >#,###</span> <span class="parentheses">(</span><span id="summaryPrivateRoomMetricsPercentage">##.#</span><span class="percentageSign">%</span><span class="parentheses">)</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        private rooms
+                    </div>
+                    <div class="dimensionMetricsSecondary">
+                        <span id="summarySharedRoomMetricsNumber">#,###</span> <span class="parentheses">(</span><span id="summarySharedRoomMetricsPercentage">##.#</span><span class="percentageSign">%</span><span class="parentheses">)</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        shared rooms
+                    </div>
+                </div>
+                <div class="dimensionContent withChart">
+                    <p>Airbnb hosts can list entire homes/apartments, private or shared rooms.</p>
+                    <p>Depending on the room type, <a href="#availability">availability</a>, and <a href="#activity">activity</a>, an airbnb listing could be more like a hotel, disruptive for neighbors, taking away housing for New Yorkers, and <a href="#" class="aboutTheLawLink">illegal</a>.</p>
+                </div>
+                <div id="dcRoomTypeChart" class="dimensionChart align-right"></div>
+            </div>
+            <div class="dimensionContainer clearfix">
+                <label><input type="checkbox" name="filterRecentReviews" id="filterRecentReviews"> Only <span class="definition" data-toggle="tooltip" data-placement="top" title="recent: Listings with a review in the last 6 months.">recent</span> and <span class="definition" data-toggle="tooltip" data-placement="top" title="frequent: Listings with an estimated booking days per year of >60 days.">frequently</span> booked</label>
+                <h2 id="activity">Activity</h2>
+                <div class="dimensionMetricsContainer">
+                    
+                    <div id="summaryEstimatedNightsPerYear" class="dimensionMetricsHeadline">
+                        ###
+                    </div>
+                    <div class="dimensionMetricsHeadlineLabel">
+                        estimated nights/year
+                    </div>
+                    
+                    <div id="summaryReviewsPerMonth" class="dimensionMetricsSecondary">
+                        ##.#
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        reviews/listing/month
+                    </div>
+
+                    <div id="summaryNumberOfReviews" class="dimensionMetricsSecondary">
+                        ###,###
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        reviews
+                    </div>
+
+                    <div class="dimensionMetricsSecondary">
+                        <span class="dollarSign">$</span><span id="summaryPrice">###</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        price/night
+                    </div> 
+
+                    <div class="dimensionMetricsSecondary">
+                        <span id="summaryEstimatedOccupancy">##.#</span><span class="percentSign">%</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        estimated occupancy
+                    </div> 
+
+                    <div class="dimensionMetricsSecondary">
+                        <span class="dollarSign">$</span><span id="summaryEstimatedIncomePerMonth">###</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        estimated income/month
+                    </div>
+                </div>
+                <div class="dimensionContent withMetrics">
+                    <p>Airbnb guests may leave a review after their stay, and these can be used as an indicator of airbnb activity (although not all guests leave a review, so the actual booking activity would be <b>much</b> higher).</i></p>
+                    <p>The minimum stay, price and number of reviews have been used to estimate a <b>minimum income per month</b> for each listing.</p>
+                    <p>How does the income from running a defacto hotel (an Airbnb room or apartment) compare to a long-term lease for an average New Yorker?</p><p>And more importantly, what is renting to a tourist rather than a resident doing to our neighborhoods?</p>
+                </div>
+                <div id="reviewsChartContainer" class="unloaded">
+                    <a href="#" id="loadReviews">load reviews</a>
+                    <span id="iconLoadingReviews" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                    <div id="dcReviewsChart" class="dimensionChart fullWidth">
+                    </div>
+                    <div id="playReviewsContainer">
+                        <button id="playReviews" type="button" class="btn btn-default btn-circle"><i class="glyphicon glyphicon-play"></i></button> Animate reviews
+                    </div>
+                </div>
+            </div>
+            <div class="dimensionContainer clearfix">
+                <label><input type="checkbox" name="filterHighlyAvailable" id="filterHighlyAvailable"> Only highly available</label>
+                <h2 id="availability">Availability</h2>
+                <div class="dimensionMetricsContainer">
+                    <div class="dimensionMetricsHeadline">
+                        <span class="summaryHighAvailabilityListingsPercentage">##.#</span><span class="percentageSign">%</span>
+                    </div>
+                    <div class="dimensionMetricsHeadlineLabel">
+                        <span class="definition" data-toggle="tooltip" data-placement="top" title="high: > 60 days/year.">high</span> availability
+                    </div>
+                    <div class="dimensionMetricsSecondary">
+                        <span id="summaryHighAvailabilityListings">###</span> <span class="parentheses">(</span><span class="summaryHighAvailabilityListingsPercentage">##.#</span><span class="percentageSign">%</span><span class="parentheses">)</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        listings w <span class="definition" data-toggle="tooltip" data-placement="top" title="high: > 60 days/year.">high</span> availability
+                    </div>
+                    <div class="dimensionMetricsSecondary">
+                        <span id="summaryLowAvailabilityListings">###</span> <span class="parentheses">(</span><span id="summaryLowAvailabilityListingsPercentage">##.#</span><span class="percentageSign">%</span><span class="parentheses">)</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        listings w <span class="definition" data-toggle="tooltip" data-placement="top" title="low: <= 60 days/year.">low</span> availability
+                    </div>
+                    <div class="dimensionMetricsSecondary">
+                        <span id="summaryAvailabilityDays">###</span> <span class="parentheses">(</span><span id="summaryAvailabilityPercentage">##.#</span><span class="percentageSign">%</span><span class="parentheses">)</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        days/year
+                    </div>
+                </div>
+                <div class="dimensionContent withMetrics">
+                    <p>An Airbnb host can setup a calendar for their listing so that it is only available for a few days or weeks a year.</p>
+                    <p>Other listings are available all year round (except for when it is already booked).</p>
+                    <p>Entire homes or apartments <span class="definition" data-toggle="tooltip" data-placement="top" title="highly available: > 60 days/year.">highly available</span> and <a href="#activity">rented frequently</a> year-round to tourists, probably don't have the owner present, are illegal, and more importantly, are displacing New Yorkers.</p>
+                    <p>Even private rooms or sublets have also traditionally been homes for many New Yorkers, so renting them to tourists instead also reduces housing supply.</p>
+
+                </div>
+                <div id="availabilityChartsContainer">
+                    <div id="dcAvailabilityCategoriesPie" class="dimensionChart"></div>
+                    <div id="dcAvailability365Chart" class="dimensionChart fullWidth"></div>
+                </div>
+            </div>
+            <div class="dimensionContainer clearfix" id="dimensionContainerMultiListing">
+                <label><input type="checkbox" name="filterMultiListings" id="filterMultiListings"> Only multi-listings</label>
+                <h2>Listings per Host</h2>
+                <div class="dimensionMetricsContainer">
+                    <div class="dimensionMetricsHeadline">
+                        <span id="summaryMultiHostPercentage">##.#</span></span><span class="percentageSign">%</span>
+                    </div>
+                    <div class="dimensionMetricsHeadlineLabel">
+                        multi-listings
+                    </div>
+                    <div class="dimensionMetricsSecondary">
+                        <span id="summarySingleHostMetricsNumber">##,###</span> <span class="parentheses">(</span><span id="summarySingleHostMetricsPercentage">##.#</span><span class="percentageSign">%</span><span class="parentheses">)</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        single listings
+                    </div>
+                    <div class="dimensionMetricsSecondary">
+                        <span id="summaryMultiHostMetricsNumber">#,###</span> <span class="parentheses">(</span><span id="summaryMultiHostMetricsPercentage">##.#</span><span class="percentageSign">%</span><span class="parentheses">)</span>
+                    </div>
+                    <div class="dimensionMetricsSecondaryLabel">
+                        multi-listings
+                    </div>
+                </div>
+                <div class="dimensionContent withMetrics">
+                    <p>Some Airbnb hosts have multiple listings.</p>
+                    <p>A host may list separate rooms in the same apartment, or multiple apartments or homes available in their entirity.</p>
+                    <p>Hosts with multiple listings are more likely to be running a business without a license and not paying taxes, and if they are renting out an entire home or apartment and aren't present, are probably doing so <a href="#" class="aboutTheLawLink">illegally</a>.</p>
+                </div>
+                <div id="dcListingsPerHostChart" class="dimensionChart fullWidth"></div>
+               
+                <h2>Top Hosts' Behaviors</h2>
+                <p>Here we analyze the typical behaviors of hosts with top listings. </p>
+                <div id="topHostsToggleContainer"><a id="topHostsToggle" href="#"><span id="topHostsToggleIcon" class="glyphicon glyphicon-menu-down"></span> <span id="topHostsToggleAction">Show</span> top hosts</a></div>
+                <div id="topHostsContainer">
+                    <table class="table table-hover table-striped table-condensed" id="topHostsTable">
+                        <thead>
+                            <tr>
+                                <th data-field="host_id" class="col-md-8">Host Name</th>
+                                <th data-field="count" class="col-md-4" data-align="right">
+                                    #Listings
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <div id="toolbar">
+                    <a href="#" id="all" class="button active">All Hosts</a>
+                    <a href="#" id="roomType" class="button">Hosts by Room Types</a>
+                    </div>  
+                    <div id="HostBehaviorBubbleChart">
+                    </div>
+                </div>
+    
+            </div>
+
+
+            <div class="dimensionContainer clearfix" id="dimensionContainerSimilarityTree">
+            <!--this is probably where we are adding similarity tree ##simtree-->
+                <h2>Similarity Tree</h2>
+                <div id="similarityTreeChart" class="dimensionChart fullWidth"></div>
+            </div>
+    
+    
+            <div id="debugPanel">
+            </div>
+        </div><!--/.narrativeContentStats -->
+    </div><!--/.narrativePanelContent -->
+
+<div id="listingHover">
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="closeHover"><span aria-hidden="true">&times;</span></button>
+    <div class="hostDetailsContainer">
+        <p><a id="listingHost" target="_blank">[HOST NAME]</a></p> 
+        <p id="listingHostCountContainer">(<span id="listingHostListingCount">##</span> other listings)</p>
+    </div>
+    <div class="listingDetailsContainer">
+        <p id="listingIDContainer"><a id="listingID" target="_blank">#######</a></p>
+        <p id="listingNameContainer"><a id="listingName" target="_blank">XXXXXXXXXXXXXXX</a></p>
+        <p id="listingNeighbourhood">xxxxxxxxxxxxxxx</p>
+        <p id="listingNeighbourhoodGroup">xxxxxxxxxxxxxxx</p>
+        <p id="listingRoomType">[ROOM TYPE]</p>
+    </div>
+    <div id="listingPriceSection" class="listingSection">
+        <p class="listingSectionHeadlineContainer">
+            <span class="listingSectionHeadline"><span class="dollarSign">$</span><span id="listingEstimatedIncomePerMonth">###</span></span><span id="listingPriceLabel" class="listingSectionHeadlineLabel"> est. income/month</span>
+        </p>
+        <p class="listingSectionSubhead"><span class="dollarSign">$</span><span id="listingPrice">###</span></span> /night</p>
+        <p class="listingSectionSubhead"><span id="listingMinimumNights">X</span> night minimum</p>
+    </div>
+    <div id="listingReviewsSection" class="listingSection">
+        <p class="listingSectionHeadlineContainer">
+            <span class="listingSectionSubhead"><span id="listingEstimatedNightsPerYear" class="listingSectionHeadline">x.x</span><span class="listingSectionHeadlineLabel"> est. nights/year</span></span>
+        </p>
+        <p class="listingSectionSubhead"><span id="listingEstimatedOccupancyRate">##.#</span>% est. occupancy rate</p>
+        <p class="listingSectionSubhead"><span id="listingReviewPerMonth">x.x</span> reviews/month</p>
+        <p class="listingSectionSubhead"><span id="listingNumberOfReviews" >###</span><span id="listingReviewsLabel"> reviews</span></p>
+        <p class="listingSectionSubhead">last: <span id="listingLastReview">xx/xx/xxxx</span></p>
+    </div>
+    <div id="listingAvailabilitySection" class="listingSection">
+        <p class="listingSectionHeadlineContainer">
+            <span id="listingAvailabilityDescription" class="listingSectionHeadline">[HIGH/LOW]</span><span class="listingSectionHeadlineLabel"> availability</span>
+        </p>
+        <p class="listingSectionSubhead"><span id="listingAvailability365">xxx</span> days/year (<span id="listingAvailabilityPercentage">##.#</span>%)</p>
+    </div>
+    <p class="listingSection">click listing on map to "pin" details</p>
+</div>
+
+
+
+
+<div id="animationStatus">
+    <p id="animationStatusMonth"></p>
+    <p id="animationStatusYear"></p> 
+</div>
+<script src='../js/insideairbnb-multicity-neighbourhoods.js' type='text/javascript'></script>
+<script>
+    city = "New York City";
+    AVAILABILITY_DAYS_LOW = 60; //days
+    REVIEW_RATE = 0.5;
+    AVERAGE_NIGHTS = 6.4;
+    INITIAL_NEIGHBOURHOOD = "Bedford-Stuyvesant";
+    setupMap([40.7369, -73.9700],11, 14);
+    neighbourhoodGroupsNames = "Boroughs";
+</script>
+<script src='city.js' type='text/javascript'></script>
+</body>
+</html>
