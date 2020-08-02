@@ -19,7 +19,7 @@
 .annotation path.connector-arrow, 
 .annotation path.connector-dot, 
 .title text, .annotation text {
-  fill: var(--annotation-color);
+  fill: #fca590d6;
 }
 
 .annotation-note-bg {
